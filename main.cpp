@@ -2,16 +2,36 @@
 #include <windows.h>
 #include <conio.h>
 
+const int WIDTH = 40;
+
 void setCursor(int x, int y) {
 	COORD pos = { (SHORT)x, (SHORT)y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
 
+struct Ball
+{
+	int x;   // 위치
+	int dx;  // 속도
+
+	void update() {
+		setCursor(x, 2);
+		std::cout << " ";
+		x = x + dx;          // 움직이고
+		if (x <= 0 || x >= WIDTH - 1)
+			dx = -dx;
+	}
+
+	void draw() {
+		setCursor(x, 2);
+		std::cout << "O";
+	}
+};
+
 int main() {
 	int x = 10;
-	const int WIDTH = 40;
-	int ballX = 20;   // 가운데 위치
-	int ballDx = 1; // 1칸씩 이동이고 공의 속도
+	Ball ball = { 20, 1 };
+	
 
 	while (true) {
 		if (_kbhit()) {              // 눌린 키 있을 때만
@@ -25,18 +45,13 @@ int main() {
 			if (x >= WIDTH) x = WIDTH -1;
 		}
 
-		setCursor(ballX, 2); // 가운데 공백을 그림
-		std::cout << " ";
-		ballX = ballX + ballDx; // 처음 21
-		if (ballX <= 0 || ballX >= WIDTH - 1)
-			ballDx = -ballDx;  // 공의 경계선 계산
-
+		ball.update();   // 공은 이 한 줄
 		setCursor(x, 0);
 		std::cout << "@";
-		setCursor(ballX, 2);
-		std::cout << "0"; // 매 프레임 공을 찍는다. 경계선 닿기 전에는 if문이 돌지 않는다.
+		ball.draw();    // 그리기도 이 한줄
 
 		Sleep(33);
 	}
+
 	return 0;
 }
