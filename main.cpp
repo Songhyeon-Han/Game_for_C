@@ -136,7 +136,7 @@ int main() {
 	std::vector<Brick> bricks;
 	for (int row = 1; row <= 3; row++) {
 		for (int col = 5; col < WIDTH - 5; col++) {
-			bricks.push_back(Brick(col, row));
+			bricks.push_back(Brick(col, row));                       // 꺽쇠 안은 무엇을 담는지 이다. 세로 3, 가로 34칸의 이중 for문 벽돌 그리기
 		}
 	}
 
@@ -151,9 +151,9 @@ int main() {
 		paddle.draw();
 		ball.draw();    // 그리기도 이 한줄
 
-		for (Brick& brick : bricks) {
-			brick.draw();
-		}
+		for (Brick& brick : bricks) {          // 범위 기반 for문. &가 있으면 "보관함 속 진짜 벽돌"을 다루고, 없으면 매번 복사본을 꺼내 다루게 됨
+			brick.draw();               //지금은 draw만 하니 복사본이어도 티가 안 나지만, 나중에 벽돌을 destroy할 때 복사본을 부수면 진짜는 멀쩡한 대참사가 남
+		}                                      
 
 		Sleep(33);
 		
