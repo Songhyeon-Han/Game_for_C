@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <conio.h>
 #include <vector>
+#include <algorithm>
 
 const int WIDTH = 40;    // 게임 창 가로 한계 
 const int HEIGHT = 20;   // 게임 창 세로 한계
@@ -87,6 +88,13 @@ public:
 		setCursor(x, y);
 		std::cout << "O";
 	}
+
+	int getX() const { return x; }
+	int getY() const { return y; }
+
+	void bounceY() {
+		dy = -dy;
+	}
 };
 
 class Paddle{
@@ -148,6 +156,22 @@ int main() {
 			std::cout << "GAME OVER";
 			break;
 		}
+
+		for (Brick& brick : bricks) {
+			if (brick.isAlive() &&
+				brick.getX() == ball.getX() &&
+				brick.getY() == ball.getY()) {
+				brick.destroy();
+				ball.bounceY();
+				break;
+			}
+		}
+
+		bool cleared = std::all_of(bricks.begin(), bricks.end(),
+			[](const Brick& b) { return !b.isAlive(); });
+
+
+
 		paddle.draw();
 		ball.draw();    // 그리기도 이 한줄
 
