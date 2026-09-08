@@ -13,7 +13,7 @@ void setCursor(int x, int y) {
 }
 
 class Brick {
-private:
+protected:
 	int x;
 	int y;
 	bool alive;    // true = 아직 안 깨짐
@@ -25,10 +25,14 @@ public:
 		alive = true; // 벽돌은 태어날 때 당연히 멀쩡한 상탱
 	}
 
+	virtual char getSymbol() const {
+		return '#';
+	}
+
 	void draw() {
 		if (alive) {
 			setCursor(x, y);
-			std::cout << "#";
+			std::cout << getSymbol();
 		}
 	}
 
@@ -36,10 +40,30 @@ public:
 	int getY() const { return y; }  // 값을 읽기만 하는 창구
 	bool isAlive() const { return alive; } // 값을 읽기만 하는 창구
 
-	void destroy() {          // 깨졌을 때 호출
+	virtual void onHit() {          // 깨졌을 때 호출
 		alive = false;
 		setCursor(x, y);
 		std::cout << " ";    // 화면에서도 지운다
+	}
+};
+
+class HardBrick : public Brick {
+private:
+	int hp = 2;
+
+public:
+	HardBrick(int startX, int startY) : Brick(startX, startY) {
+	}
+
+	char getSymbol() const override {
+		return '=';
+	}
+
+	void onHit() override {
+		hp = hp - 1;
+		if (hp <= 0) {
+			Brick::onHit();
+		}
 	}
 };
 
@@ -161,7 +185,7 @@ int main() {
 			if (brick.isAlive() &&
 				brick.getX() == ball.getX() &&
 				brick.getY() == ball.getY()) {
-				brick.destroy();
+				brick.onHit();
 				ball.bounceY();
 				break;
 			}
